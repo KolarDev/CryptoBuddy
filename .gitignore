@@ -1,0 +1,7 @@
+# ignoring config.env file
+
+config.env
+
+node_modules
+
+*.txt
