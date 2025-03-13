@@ -12,7 +12,7 @@ mongoose
   .connect(DB_LOCAL)
   .then(() => console.log("Database Connected Succesfully!"));
 
-const port = config.PORT || 9000;
+const port = config.PORT || 9090;
 
 const server = app.listen(port, () => {
   console.log(`App listening on port ${port}`);
