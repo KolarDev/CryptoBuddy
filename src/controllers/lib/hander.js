@@ -25,5 +25,5 @@ function errorHandler(error, name, from) {
 }
 
 module.exports = {
-  errorhandler,
+  errorHandler,
 };

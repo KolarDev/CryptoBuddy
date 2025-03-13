@@ -1,13 +1,13 @@
-import TelegramBot from "node-telegram-bot-api";
-import dotenv from "dotenv";
+import { axiosInstance } from "./axios";
 
-dotenv.config();
-
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN!, {
-  webHook: { port: Number(process.env.PORT) || 3000 },
-});
-
-// Set webhook URL
-bot.setWebHook(`${process.env.WEBHOOK_URL}/webhook`);
-
-export default bot;
+export async function setWebhook() {
+  try {
+    const webhookUrl = `${process.env.WEBHOOK_URL}/webhook`;
+    await axiosInstance.get("setWebhook", {
+      params: { url: webhookUrl },
+    });
+    console.log("✅ Webhook set successfully!");
+  } catch (error) {
+    console.error("❌ Failed to set webhook:", error);
+  }
+}

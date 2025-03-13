@@ -1,13 +1,19 @@
 import path from "path";
 import express, { Application, Request, Response } from "express";
 import bodyparser from "body-parser";
-import { config } from "./config/index";
-// import { handler } from "./controllers";
+import webhookRoute from "./routes/webhookRoute";
+import { setWebhook } from "./config/bot";
+import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 
 const app: Application = express();
 
 app.use(express.json());
 app.use(bodyparser.json());
+
+// Set Webhook
+setWebhook();
+
+app.use("/", webhookRoute);
 
 app.get("*", (req: Request, res: Response) => {
   // res.send(await handler(req, "GET"));
@@ -28,5 +34,8 @@ app.post("*", (req: Request, res: Response) => {
     app: "CryptoBuddy",
   });
 });
+
+// Global Error Handler
+app.use(globalErrorHandler);
 
 export default app;
