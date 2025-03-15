@@ -1,8 +1,10 @@
 import { axiosInstance } from "./axios";
+import { config } from "./envSchema";
+
 
 export async function setWebhook() {
   try {
-    const webhookUrl = `${process.env.WEBHOOK_URL}/webhook`;
+    const webhookUrl = `${config.WEBHOOK_URL}/webhook`;
     await axiosInstance.get("setWebhook", {
       params: { url: webhookUrl },
     });

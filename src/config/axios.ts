@@ -1,6 +1,7 @@
 import axios from "axios";
+import { config } from "./envSchema";
 
-const TELEGRAM_API = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/`;
+const TELEGRAM_API = `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/`;
 
 export const axiosInstance = axios.create({
   baseURL: TELEGRAM_API,

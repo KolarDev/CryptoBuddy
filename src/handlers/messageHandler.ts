@@ -8,9 +8,11 @@ export async function handleMessage(messageObj: any) {
 
     const chatId = messageObj.chat.id;
 
+    const userInfo = messageObj.from;
+
     if (messageText.startsWith("/")) {
       const [command, ...args] = messageText.substring(1).split(" ");
-      return handleCommand(chatId, command, args.join(" "));
+      return handleCommand(chatId, command, args.join(" "), userInfo);
     }
 
     // If not a command

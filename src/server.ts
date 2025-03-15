@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 dotenv.config({ path: "./config.env" });
-import { config } from "./config/index";
+import { config } from "./config/envSchema";
 
 import app from "./app";
 
@@ -12,7 +12,7 @@ mongoose
   .connect(DB_LOCAL)
   .then(() => console.log("Database Connected Succesfully!"));
 
-const port = config.PORT || 9090;
+const port = config.PORT || 9091;
 
 const server = app.listen(port, () => {
   console.log(`App listening on port ${port}`);

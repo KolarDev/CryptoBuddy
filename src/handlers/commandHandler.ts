@@ -10,6 +10,7 @@ export async function handleCommand(
 ) {
   switch (command) {
     case "start":
+      console.log("start command working🖐🖐");
       await registerUser(
         chatId,
         userInfo.username,
