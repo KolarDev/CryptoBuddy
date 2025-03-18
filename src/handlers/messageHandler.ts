@@ -12,7 +12,7 @@ export async function handleMessage(messageObj: any) {
 
     if (messageText.startsWith("/")) {
       const [command, ...args] = messageText.substring(1).split(" ");
-      return handleCommand(chatId, command, args.join(" "), userInfo);
+      return handleCommand(chatId, command, args.join(" "));
     }
 
     // If not a command

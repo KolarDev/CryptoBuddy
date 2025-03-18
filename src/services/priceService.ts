@@ -4,10 +4,7 @@ import { errorHandler } from "../middlewares/errorHandler";
 
 export async function handlePriceCommand(chatId: number, coin?: string) {
   if (!coin) {
-    return sendMessage(
-      chatId,
-      "⚡ Please provide a coin symbol, e.g., `/price btc`"
-    );
+    return ctx.reply("⚡ Please provide a coin symbol, e.g., `/price btc`");
   }
 
   try {

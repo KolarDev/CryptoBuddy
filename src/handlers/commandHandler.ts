@@ -1,29 +1,41 @@
+import { Context } from "telegraf";
 import { sendMessage } from "../config/axios";
 import { handlePriceCommand } from "../services/priceService";
 import { registerUser } from "../services/userService";
 
 export async function handleCommand(
-  chatId: number,
+  ctx: Context,
   command: string,
-  args?: string,
-  userInfo?: any
+  args?: string
 ) {
+  if (!ctx.chat || !ctx.from) {
+    console.error("Missing chat or user information.");
+    return ctx.reply?.("⚠️ Unable to process request.");
+  }
+
+  const chatId = ctx.chat?.id;
+  const userInfo = ctx.from;
+
   switch (command) {
     case "start":
-      console.log("start command working🖐🖐");
+      console.log("start command working 🖐🖐");
       await registerUser(
         chatId,
-        userInfo.username,
+        userInfo.username ?? "",
         userInfo.first_name,
-        userInfo.last_name
+        userInfo.last_name ?? ""
       );
-      return sendMessage(
-        chatId,
+      return ctx.reply(
         "👋 Welcome to CryptoBuddy! Use /price <coin> to get prices."
       );
-    case "price":
-      return handlePriceCommand(chatId, args);
+
+    case "coin-price":
+      return ctx.scene.enter("convertScene"); // Start conversion process
+
+    case "convert":
+      return ctx.scene.enter("convertScene"); // Start conversion process
+
     default:
-      return sendMessage(chatId, "⚠️ Unknown command. Try /price <coin>.");
+      return ctx.reply("⚠️ Unknown command. Try /price <coin>.");
   }
 }
