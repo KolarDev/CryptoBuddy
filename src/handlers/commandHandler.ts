@@ -1,10 +1,9 @@
 import { Context } from "telegraf";
-import { sendMessage } from "../config/axios";
-import { handlePriceCommand } from "../services/priceService";
 import { registerUser } from "../services/userService";
+import { MyContext } from "../interfaces/scenesInterface";
 
 export async function handleCommand(
-  ctx: Context,
+  ctx: MyContext,
   command: string,
   args?: string
 ) {
@@ -28,10 +27,6 @@ export async function handleCommand(
       return ctx.reply(
         "👋 Welcome to CryptoBuddy! Use /price <coin> to get prices."
       );
-
-    case "coin-price":
-      return ctx.scene.enter("convertScene"); // Start conversion process
-
     case "convert":
       return ctx.scene.enter("convertScene"); // Start conversion process
 

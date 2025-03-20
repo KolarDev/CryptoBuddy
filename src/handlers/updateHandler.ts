@@ -1,10 +1,13 @@
 import { Telegraf, Context } from "telegraf";
+import { MyContext } from "../interfaces/scenesInterface";
 import { handleCommand } from "./commandHandler";
 import { handleMessage } from "./messageHandler";
 import { handleCallbackQuery } from "./callbackHandler";
 
-export async function handleUpdate(bot: Telegraf, update: any) {
+export async function handleUpdate(bot: Telegraf<MyContext>, update: any) {
   try {
+    await bot.handleUpdate(update); // Let Telegraf process the update
+
     const ctx = new Context(update, bot.telegram, bot.botInfo!);
 
     if (update.message) {
@@ -20,6 +23,6 @@ export async function handleUpdate(bot: Telegraf, update: any) {
       return handleCallbackQuery(ctx);
     }
   } catch (error) {
-    console.error("Error in handleUpdate:", error);
+    console.error("❌ Error in handleUpdate:", error);
   }
 }

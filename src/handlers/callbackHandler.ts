@@ -1,5 +1,4 @@
 import { Context } from "telegraf";
-import { handlePriceCommand } from "../services/priceService";
 
 export async function handleCallbackQuery(ctx: Context) {
   if (ctx.callbackQuery && "data" in ctx.callbackQuery) {
@@ -10,10 +9,9 @@ export async function handleCallbackQuery(ctx: Context) {
 
     switch (callbackData) {
       case "price_btc":
-        return handlePriceCommand(chatId, "BTC");
-
+        return null;
       case "price_eth":
-        return handlePriceCommand(chatId, "ETH");
+        return null;
 
       default:
         return ctx.reply("⚠️ Unknown action.");

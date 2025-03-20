@@ -1,24 +1,27 @@
 import axios from "axios";
-import { sendMessage } from "../config/axios";
-import { errorHandler } from "../middlewares/errorHandler";
 
-export async function handlePriceCommand(chatId: number, coin?: string) {
-  if (!coin) {
-    return ctx.reply("⚡ Please provide a coin symbol, e.g., `/price btc`");
-  }
-
+/**
+ * Fetches the exchange rate between two cryptocurrencies.
+ * @param from The base cryptocurrency (e.g., BTC).
+ * @param to The target cryptocurrency (e.g., USDT).
+ * @returns The exchange rate or null if an error occurs.
+ */
+export async function getCryptoPrice(
+  from: string,
+  to: string
+): Promise<number | null> {
   try {
     const { data } = await axios.get(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd`
+      `https://api.coingecko.com/api/v3/simple/price?ids=${from}&vs_currencies=${to}`
     );
 
-    if (!data[coin]) {
-      return sendMessage(chatId, "❌ Invalid coin symbol. Try /price btc");
+    if (!data[from] || !data[from][to]) {
+      return null; // Let convertScene handle the invalid response
     }
 
-    const price = data[coin].usd;
-    sendMessage(chatId, `💰 ${coin.toUpperCase()} Price: *$${price}*`);
+    return data[from][to]; // Return only the price
   } catch (error) {
-    errorHandler(error, "handlePriceCommand");
+    console.error("Error fetching crypto price:", error);
+    return null; // Return null on failure
   }
 }

@@ -8,17 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const messageHandler_1 = require("../handlers/messageHandler");
+const bot_1 = __importDefault(require("./../bot"));
 const catchAsync_1 = require("../utils/catchAsync");
+const updateHandler_1 = require("../handlers/updateHandler");
 const router = (0, express_1.Router)();
 router.post("/webhook", (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Received Telegram request:", req.body);
     const update = req.body;
-    if (update.message) {
-        yield (0, messageHandler_1.handleMessage)(update.message);
-    }
+    yield (0, updateHandler_1.handleUpdate)(bot_1.default, update);
     res.sendStatus(200);
 })));
 exports.default = router;

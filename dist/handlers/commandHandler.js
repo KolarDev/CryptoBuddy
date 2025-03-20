@@ -10,20 +10,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleCommand = handleCommand;
-const axios_1 = require("../config/axios");
-const priceService_1 = require("../services/priceService");
 const userService_1 = require("../services/userService");
-function handleCommand(chatId, command, args, userInfo) {
+function handleCommand(ctx, command, args) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b, _c, _d;
+        if (!ctx.chat || !ctx.from) {
+            console.error("Missing chat or user information.");
+            return (_a = ctx.reply) === null || _a === void 0 ? void 0 : _a.call(ctx, "⚠️ Unable to process request.");
+        }
+        const chatId = (_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.id;
+        const userInfo = ctx.from;
         switch (command) {
             case "start":
-                console.log("start command working🖐🖐");
-                yield (0, userService_1.registerUser)(chatId, userInfo.username, userInfo.first_name, userInfo.last_name);
-                return (0, axios_1.sendMessage)(chatId, "👋 Welcome to CryptoBuddy! Use /price <coin> to get prices.");
-            case "price":
-                return (0, priceService_1.handlePriceCommand)(chatId, args);
+                console.log("start command working 🖐🖐");
+                yield (0, userService_1.registerUser)(chatId, (_c = userInfo.username) !== null && _c !== void 0 ? _c : "", userInfo.first_name, (_d = userInfo.last_name) !== null && _d !== void 0 ? _d : "");
+                return ctx.reply("👋 Welcome to CryptoBuddy! Use /price <coin> to get prices.");
+            case "convert":
+                return ctx.scene.enter("convertScene"); // Start conversion process
             default:
-                return (0, axios_1.sendMessage)(chatId, "⚠️ Unknown command. Try /price <coin>.");
+                return ctx.reply("⚠️ Unknown command. Try /price <coin>.");
         }
     });
 }

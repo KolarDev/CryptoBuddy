@@ -9,26 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleMessage = handleMessage;
-const errorHandler_1 = require("../middlewares/errorHandler");
-const commandHandler_1 = require("./commandHandler");
-function handleMessage(messageObj) {
+exports.handleCallbackQuery = handleCallbackQuery;
+function handleCallbackQuery(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const messageText = messageObj.text || "";
-            if (!messageText)
-                return;
-            const chatId = messageObj.chat.id;
-            const userInfo = messageObj.from;
-            if (messageText.startsWith("/")) {
-                const [command, ...args] = messageText.substring(1).split(" ");
-                return (0, commandHandler_1.handleCommand)(chatId, command, args.join(" "));
+        var _a;
+        if (ctx.callbackQuery && "data" in ctx.callbackQuery) {
+            const callbackData = ctx.callbackQuery.data;
+            console.log("Callback data:", callbackData);
+            const chatId = ctx.chat.id;
+            switch (callbackData) {
+                case "price_btc":
+                    return null;
+                case "price_eth":
+                    return null;
+                default:
+                    return ctx.reply("⚠️ Unknown action.");
             }
-            // If not a command
-            return;
         }
-        catch (error) {
-            (0, errorHandler_1.errorHandler)(error, "handleMessage");
+        else {
+            return (_a = ctx.reply) === null || _a === void 0 ? void 0 : _a.call(ctx, "⚠️ Unable to process request. Data is undefined");
         }
     });
 }
