@@ -24,11 +24,13 @@ mongoose
 
 const port = config.PORT || 9091;
 
+const webhookUrl = `${config.WEBHOOK_URL}/webhook`;
+
 const server = app.listen(port, async () => {
   console.log(`App listening on port ${port}`);
 
   try {
-    await bot.telegram.setWebhook(config.WEBHOOK_URL);
+    await bot.telegram.setWebhook(webhookUrl);
     console.log(`✅ Webhook set successfully: ${config.WEBHOOK_URL}`);
   } catch (error) {
     console.error("❌ Failed to set webhook:", error);
