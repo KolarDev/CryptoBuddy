@@ -17,11 +17,6 @@ interface MySession<S extends BaseWizardSession = BaseWizardSession>
   data: S;
 }
 
-// export interface MyContext<S extends BaseWizardSession = BaseWizardSession>
-//   extends Scenes.WizardContext<Scenes.WizardSession<S> & S> {
-//   session: Scenes.WizardSession<S> & S;
-// }
-
 export interface MyContext<S extends BaseWizardSession = BaseWizardSession>
   extends Context {
   // will be available under `ctx.myContextProp`

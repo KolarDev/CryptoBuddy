@@ -22,6 +22,11 @@ bot.use(validateContext);
 
 // Command Handler
 bot.on("text", async (ctx: MyContext) => {
+  console.log(ctx);
+  if (!ctx.message || !("text" in ctx.message)) {
+    return; // Ignore if the message is not a text message
+  }
+
   const text = ctx.message.text || "";
   if (text.startsWith("/")) {
     const [command, ...args] = text.substring(1).split(" ");
