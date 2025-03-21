@@ -14,7 +14,7 @@ const DB_URL = config.MONGO_URI.replace(
   "<db_password>",
   config.MONGO_URI_PASSWORD
 );
-const DB = config.NODE_ENV === "PRODUCTION" ? DB_URL : DB_LOCAL; // connect to database based on the environment
+const DB = config.NODE_ENV === "DEVELOPMENT" ? DB_LOCAL : DB_URL; // connect to database based on the environment
 mongoose
   .connect(DB)
   .then(() => console.log("Database Connected Succesfully !"))
