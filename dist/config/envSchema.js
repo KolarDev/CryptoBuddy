@@ -45,6 +45,8 @@ const configSchema = z
         .readonly(),
     ALLOWED_ORIGINS: z.string().default("*"),
     DATABASE_LOCAL: z.string().min(1, "DATABASE_LOCAL is required!"),
+    MONGO_URI: z.string().min(1, "MONGO_URI is required!"),
+    MONGO_URI_PASSWORD: z.string(),
     TELEGRAM_BOT_TOKEN: z.string(),
     WEBHOOK_URL: z.string().url(),
     MAIL_HOST: z.string().optional(),
@@ -55,4 +57,5 @@ const configSchema = z
     MAIL_DISPLAY_NAME: z.string().optional(),
 })
     .readonly();
-exports.config = configSchema.parse(process.env);
+const config = configSchema.parse(process.env);
+exports.config = config;

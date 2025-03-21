@@ -20,9 +20,13 @@ const app_1 = __importDefault(require("./app"));
 const bot_1 = __importDefault(require("./bot"));
 //   CONNECT DATABASE
 const DB_LOCAL = envSchema_1.config.DATABASE_LOCAL;
+// const DB_URL = process.env.MONGO_URI;
+const DB_URL = envSchema_1.config.MONGO_URI.replace("<db_password>", envSchema_1.config.MONGO_URI_PASSWORD);
+const DB = envSchema_1.config.NODE_ENV === "DEVELOPMENT" ? DB_LOCAL : DB_URL; // connect to database based on the environment
 mongoose
-    .connect(DB_LOCAL)
-    .then(() => console.log("Database Connected Succesfully!"));
+    .connect(DB)
+    .then(() => console.log("Database Connected Succesfully !"))
+    .catch((err) => console.log("Database connection failed ! ", err.message || err));
 const port = envSchema_1.config.PORT || 9091;
 const server = app_1.default.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${port}`);

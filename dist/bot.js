@@ -26,6 +26,10 @@ bot.use(stage.middleware()); // Enable scenes
 bot.use(validateContext_1.validateContext);
 // Command Handler
 bot.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(ctx);
+    if (!ctx.message || !("text" in ctx.message)) {
+        return; // Ignore if the message is not a text message
+    }
     const text = ctx.message.text || "";
     if (text.startsWith("/")) {
         const [command, ...args] = text.substring(1).split(" ");
