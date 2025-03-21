@@ -9,7 +9,9 @@ const configSchema = z
       .default("DEVELOPMENT")
       .readonly(),
     ALLOWED_ORIGINS: z.string().default("*"),
-    DATABASE_LOCAL: z.string().min(1, "DATABASE_LOCAL is required!"),
+    DATABASE_LOCAL: z.string().min(1, "DATABASE_LOCAL is required!").optional(),
+    MONGO_URI: z.string().min(1, "MONGO_URI is required!"),
+    MONGO_URI_PASSWORD: z.string(),
     TELEGRAM_BOT_TOKEN: z.string(),
     WEBHOOK_URL: z.string().url(),
     MAIL_HOST: z.string().optional(),
@@ -21,6 +23,13 @@ const configSchema = z
   })
   .readonly();
 
-export type TConfig = z.infer<typeof configSchema>;
+type TConfig = z.infer<typeof configSchema>;
 
-export const config = configSchema.parse(process.env);
+const config = configSchema.parse(process.env);
+
+// Require DATABASE_LOCAL only in development
+if (config.NODE_ENV === "DEVELOPMENT" && !process.env.DATABASE_LOCAL) {
+  throw new Error("❌ DATABASE_LOCAL is required in development mode!");
+}
+
+export { config, TConfig };
