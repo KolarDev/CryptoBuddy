@@ -14,13 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bot_1 = __importDefault(require("./../bot"));
-const catchAsync_1 = require("../utils/catchAsync");
 const updateHandler_1 = require("../handlers/updateHandler");
 const router = (0, express_1.Router)();
-router.post("/webhook", (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Received Telegram request:", req.body);
-    const update = req.body;
-    yield (0, updateHandler_1.handleUpdate)(bot_1.default, update);
-    res.sendStatus(200);
-})));
+    try {
+        const update = req.body;
+        yield (0, updateHandler_1.handleUpdate)(bot_1.default, update);
+        res.sendStatus(200);
+    }
+    catch (err) {
+        console.error("❌❌ Error calling webhook:", err);
+    }
+}));
 exports.default = router;

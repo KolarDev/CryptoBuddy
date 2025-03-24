@@ -40,4 +40,7 @@ bot.on("callback_query", async (ctx: MyContext) => {
   return handleCallbackQuery(ctx);
 });
 
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
 export default bot;

@@ -22,7 +22,7 @@ const bot_1 = __importDefault(require("./bot"));
 const DB_LOCAL = envSchema_1.config.DATABASE_LOCAL;
 // const DB_URL = process.env.MONGO_URI;
 const DB_URL = envSchema_1.config.MONGO_URI.replace("<db_password>", envSchema_1.config.MONGO_URI_PASSWORD);
-const DB = envSchema_1.config.NODE_ENV === "DEVELOPMENT" ? DB_LOCAL : DB_URL; // connect to database based on the environment
+const DB = envSchema_1.config.NODE_ENV === "PRODUCTION" ? DB_URL : DB_LOCAL; // connect to database based on the environment
 mongoose
     .connect(DB)
     .then(() => console.log("Database Connected Succesfully !"))
