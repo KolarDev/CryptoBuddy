@@ -43,13 +43,21 @@ step3.action("convert_usd", async (ctx) => {
   await ctx.answerCbQuery();
   ctx.scene.session.toCoin = "USD";
 
-  const price = await getCryptoPrice(ctx.scene.session.fromCoin!, "USD");
+  // Ensure fromCoin and amount exist before using them
+  if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+    await ctx.reply(
+      "❌ Conversion failed. Session data is missing. Please restart."
+    );
+    return ctx.scene.leave();
+  }
+
+  const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
   if (!price) {
     await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
     return ctx.scene.leave();
   }
 
-  const convertedAmount = (ctx.scene.session.amount! * price).toFixed(2);
+  const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
   await ctx.reply(
     `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
   );
@@ -70,8 +78,16 @@ step3.action("convert_crypto", async (ctx) => {
 step4.on("text", async (ctx) => {
   ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
 
+  // Ensure fromCoin and amount exist before using them
+  if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+    await ctx.reply(
+      "❌ Conversion failed. Session data is missing. Please restart."
+    );
+    return ctx.scene.leave();
+  }
+
   const price = await getCryptoPrice(
-    ctx.scene.session.fromCoin!,
+    ctx.scene.session.fromCoin,
     ctx.scene.session.toCoin
   );
   if (!price) {
@@ -79,7 +95,7 @@ step4.on("text", async (ctx) => {
     return ctx.scene.leave();
   }
 
-  const convertedAmount = (ctx.scene.session.amount! * price).toFixed(2);
+  const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
   await ctx.reply(
     `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} ${ctx.scene.session.toCoin}** 💱`
   );
