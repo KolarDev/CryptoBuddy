@@ -10,9 +10,9 @@ const step4 = new Composer<MyContext<ConvertSceneSession>>();
 
 // Step 1: Ask user for the cryptocurrency they have
 step1.on("text", async (ctx) => {
-  ctx.session.data.fromCoin = ctx.message.text.toUpperCase();
+  ctx.scene.session.fromCoin = ctx.message.text.toUpperCase();
   await ctx.reply(
-    `✅ Got it! Now enter the amount of ${ctx.session.data.fromCoin}:`
+    `✅ Got it! Now enter the amount of ${ctx.scene.session.fromCoin}:`
   );
   return ctx.wizard.next();
 });
@@ -24,7 +24,7 @@ step2.on("text", async (ctx) => {
     return ctx.reply("⚠️ Please enter a valid amount.");
   }
 
-  ctx.session.data.amount = amount;
+  ctx.scene.session.amount = amount;
 
   // Show inline keyboard for conversion options
   await ctx.reply(
@@ -39,17 +39,17 @@ step2.on("text", async (ctx) => {
 // Step 3: Handle conversion to USD
 step3.action("convert_usd", async (ctx) => {
   await ctx.answerCbQuery();
-  ctx.session.data.toCoin = "USD";
+  ctx.scene.session.toCoin = "USD";
 
-  const price = await getCryptoPrice(ctx.session.data.fromCoin!, "USD");
+  const price = await getCryptoPrice(ctx.scene.session.fromCoin!, "USD");
   if (!price) {
     await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
     return ctx.scene.leave();
   }
 
-  const convertedAmount = (ctx.session.data.amount! * price).toFixed(2);
+  const convertedAmount = (ctx.scene.session.amount! * price).toFixed(2);
   await ctx.reply(
-    `✅ ${ctx.session.data.amount} ${ctx.session.data.fromCoin} is **${convertedAmount} USD** 💱`
+    `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
   );
 
   return ctx.scene.leave();
@@ -66,20 +66,20 @@ step3.action("convert_crypto", async (ctx) => {
 
 // Step 5: Handle target currency input and perform conversion
 step4.on("text", async (ctx) => {
-  ctx.session.data.toCoin = ctx.message.text.toUpperCase();
+  ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
 
   const price = await getCryptoPrice(
-    ctx.session.data.fromCoin!,
-    ctx.session.data.toCoin
+    ctx.scene.session.fromCoin!,
+    ctx.scene.session.toCoin
   );
   if (!price) {
     await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
     return ctx.scene.leave();
   }
 
-  const convertedAmount = (ctx.session.data.amount! * price).toFixed(2);
+  const convertedAmount = (ctx.scene.session.amount! * price).toFixed(2);
   await ctx.reply(
-    `✅ ${ctx.session.data.amount} ${ctx.session.data.fromCoin} is **${convertedAmount} ${ctx.session.data.toCoin}** 💱`
+    `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} ${ctx.scene.session.toCoin}** 💱`
   );
 
   return ctx.scene.leave();
@@ -116,7 +116,7 @@ export const convertScene = new Scenes.WizardScene<
 //     if (!ctx.message || !("text" in ctx.message)) {
 //       return ctx.reply("⚠️ Please enter a valid cryptocurrency symbol.");
 //     }
-//     ctx.session.data.fromCoin = ctx.message.text.toUpperCase();
+//     ctx.scene.session.fromCoin = ctx.message.text.toUpperCase();
 
 //     // Ask for amount
 //     await ctx.reply(
