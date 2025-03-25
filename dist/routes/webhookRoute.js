@@ -14,13 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bot_1 = __importDefault(require("./../bot"));
-const updateHandler_1 = require("../handlers/updateHandler");
 const router = (0, express_1.Router)();
 router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Received Telegram request:", req.body);
     try {
-        const update = req.body;
-        yield (0, updateHandler_1.handleUpdate)(bot_1.default, update);
+        yield bot_1.default.handleUpdate(req.body);
         res.sendStatus(200);
     }
     catch (err) {
@@ -28,3 +26,6 @@ router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 exports.default = router;
+// curl -X POST "https://cryptobuddy-sst6.onrender.com/webhook" \
+//      -H "Content-Type: application/json" \
+//      -d '{"update_id":123456789, "message":{"message_id":1, "from":{"id":123456, "is_bot":false, "first_name":"Test"}, "chat":{"id":123456, "type":"private"}, "text":"/start"}}'

@@ -19,8 +19,8 @@ const step3 = new telegraf_1.Composer();
 const step4 = new telegraf_1.Composer();
 // Step 1: Ask user for the cryptocurrency they have
 step1.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session.data.fromCoin = ctx.message.text.toUpperCase();
-    yield ctx.reply(`✅ Got it! Now enter the amount of ${ctx.session.data.fromCoin}:`);
+    ctx.scene.session.fromCoin = ctx.message.text.toUpperCase();
+    yield ctx.reply(`✅ Got it! Now enter the amount of ${ctx.scene.session.fromCoin}:`);
     return ctx.wizard.next();
 }));
 // Step 2: Ask for amount
@@ -29,7 +29,7 @@ step2.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (isNaN(amount)) {
         return ctx.reply("⚠️ Please enter a valid amount.");
     }
-    ctx.session.data.amount = amount;
+    ctx.scene.session.amount = amount;
     // Show inline keyboard for conversion options
     yield ctx.reply("🔄 Choose how you want to convert:", telegraf_1.Markup.inlineKeyboard([
         [telegraf_1.Markup.button.callback("💵 Convert to USD", "convert_usd")],
@@ -39,14 +39,14 @@ step2.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 // Step 3: Handle conversion to USD
 step3.action("convert_usd", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.answerCbQuery();
-    ctx.session.data.toCoin = "USD";
-    const price = yield (0, priceService_1.getCryptoPrice)(ctx.session.data.fromCoin, "USD");
+    ctx.scene.session.toCoin = "USD";
+    const price = yield (0, priceService_1.getCryptoPrice)(ctx.scene.session.fromCoin, "USD");
     if (!price) {
         yield ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
         return ctx.scene.leave();
     }
-    const convertedAmount = (ctx.session.data.amount * price).toFixed(2);
-    yield ctx.reply(`✅ ${ctx.session.data.amount} ${ctx.session.data.fromCoin} is **${convertedAmount} USD** 💱`);
+    const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
+    yield ctx.reply(`✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`);
     return ctx.scene.leave();
 }));
 // Step 4: Ask user for target currency if not converting to USD
@@ -57,14 +57,14 @@ step3.action("convert_crypto", (ctx) => __awaiter(void 0, void 0, void 0, functi
 }));
 // Step 5: Handle target currency input and perform conversion
 step4.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session.data.toCoin = ctx.message.text.toUpperCase();
-    const price = yield (0, priceService_1.getCryptoPrice)(ctx.session.data.fromCoin, ctx.session.data.toCoin);
+    ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
+    const price = yield (0, priceService_1.getCryptoPrice)(ctx.scene.session.fromCoin, ctx.scene.session.toCoin);
     if (!price) {
         yield ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
         return ctx.scene.leave();
     }
-    const convertedAmount = (ctx.session.data.amount * price).toFixed(2);
-    yield ctx.reply(`✅ ${ctx.session.data.amount} ${ctx.session.data.fromCoin} is **${convertedAmount} ${ctx.session.data.toCoin}** 💱`);
+    const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
+    yield ctx.reply(`✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} ${ctx.scene.session.toCoin}** 💱`);
     return ctx.scene.leave();
 }));
 // Create the scene using the composers
@@ -91,7 +91,7 @@ step4 // Handles input for "toCoin" if not USD
 //     if (!ctx.message || !("text" in ctx.message)) {
 //       return ctx.reply("⚠️ Please enter a valid cryptocurrency symbol.");
 //     }
-//     ctx.session.data.fromCoin = ctx.message.text.toUpperCase();
+//     ctx.scene.session.fromCoin = ctx.message.text.toUpperCase();
 //     // Ask for amount
 //     await ctx.reply(
 //       `✅ Got it! Now enter the amount of ${ctx.session.data.fromCoin}:`

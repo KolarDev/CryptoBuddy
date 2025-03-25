@@ -10,6 +10,8 @@ const step4 = new Composer<MyContext<ConvertSceneSession>>();
 
 // Step 1: Ask user for the cryptocurrency they have
 step1.on("text", async (ctx) => {
+  console.log("📌 ctx.scene.session:", ctx.scene.session);
+
   ctx.scene.session.fromCoin = ctx.message.text.toUpperCase();
   await ctx.reply(
     `✅ Got it! Now enter the amount of ${ctx.scene.session.fromCoin}:`

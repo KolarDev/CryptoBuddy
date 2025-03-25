@@ -41,4 +41,6 @@ bot.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 bot.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     return (0, callbackHandler_1.handleCallbackQuery)(ctx);
 }));
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
 exports.default = bot;
