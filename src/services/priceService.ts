@@ -10,6 +10,8 @@ export async function getCryptoPrice(
   from: string,
   to: string
 ): Promise<number | null> {
+  console.log(`🖐 In the getCryptoPrice fromCoin ${from} toCoin ${to}`);
+
   try {
     const { data } = await axios.get(
       `https://api.coingecko.com/api/v3/simple/price?ids=${from}&vs_currencies=${to}`
