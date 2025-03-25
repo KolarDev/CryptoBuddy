@@ -50,6 +50,9 @@ step3.action("convert_usd", async (ctx) => {
     );
     return ctx.scene.leave();
   }
+  console.log(
+    `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
+  );
 
   const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
   if (!price) {
