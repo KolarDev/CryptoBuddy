@@ -37,6 +37,10 @@ bot.on("text", async (ctx: MyContext) => {
 
 // Callback Query Handler
 bot.on("callback_query", async (ctx: MyContext) => {
+  if (ctx.scene.current) {
+    console.log("Scene is active, letting the scene handle the callback.");
+    return;
+  }
   return handleCallbackQuery(ctx);
 });
 

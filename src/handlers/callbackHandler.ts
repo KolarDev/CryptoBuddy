@@ -5,7 +5,8 @@ export async function handleCallbackQuery(ctx: Context) {
     const callbackData = ctx.callbackQuery.data;
     console.log("Callback data:", callbackData);
 
-    const chatId = ctx.chat!.id;
+    await ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
+
 
     switch (callbackData) {
       case "price_btc":
@@ -14,7 +15,7 @@ export async function handleCallbackQuery(ctx: Context) {
         return null;
 
       default:
-        return ctx.reply("⚠️ Unknown action. get into a scene");
+        return ctx.reply("⚠️ Unknown action.");
     }
   } else {
     return ctx.reply?.("⚠️ Unable to process request. Data is undefined");
