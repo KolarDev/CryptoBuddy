@@ -14,7 +14,7 @@ export async function handleCallbackQuery(ctx: Context) {
         return null;
 
       default:
-        return ctx.reply("⚠️ Unknown action.");
+        return ctx.reply("⚠️ Unknown action. get into a scene");
     }
   } else {
     return ctx.reply?.("⚠️ Unable to process request. Data is undefined");
