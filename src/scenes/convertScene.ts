@@ -36,6 +36,7 @@ step2.on("text", async (ctx) => {
       [Markup.button.callback("🔄 Convert to Other Coins", "convert_crypto")],
     ])
   );
+  return ctx.wizard.next();
 });
 
 step3.on("callback_query", async (ctx) => {
