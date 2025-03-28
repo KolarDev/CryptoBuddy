@@ -38,78 +38,124 @@ step2.on("text", async (ctx) => {
   );
 });
 
-// Step 3: Handle conversion to USD
-step3.action("convert_usd", async (ctx) => {
-  await ctx.answerCbQuery();
-  ctx.scene.session.toCoin = "USD";
+step3.on("callback_query", async (ctx) => {
+  await ctx.answerCbQuery(); // Acknowledge button click
 
-  // Ensure fromCoin and amount exist before using them
-  if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
-    await ctx.reply(
-      "❌ Conversion failed. Session data is missing. Please restart."
+  const callbackData = ctx.callbackQuery.data;
+  console.log("Callback Data:", callbackData);
+
+  if (callbackData === "convert_usd") {
+    ctx.scene.session.toCoin = "USD";
+
+    // Ensure fromCoin and amount exist before using them
+    if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+      await ctx.reply(
+        "❌ Conversion failed. Session data is missing. Please restart."
+      );
+      return ctx.scene.leave();
+    }
+
+    console.log(
+      `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
     );
-    return ctx.scene.leave();
-  }
-  console.log(
-    `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
-  );
 
-  const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
-  if (!price) {
-    await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
-    return ctx.scene.leave();
-  }
+    const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
+    if (!price) {
+      await ctx.reply(
+        "❌ Conversion failed. Check coin symbols and try again."
+      );
+      return ctx.scene.leave();
+    }
 
-  const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
-  await ctx.reply(
-    `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
-  );
-
-  return ctx.scene.leave();
-});
-
-// Step 4: Ask user for target currency if not converting to USD
-step3.action("convert_crypto", async (ctx) => {
-  await ctx.answerCbQuery();
-  await ctx.reply(
-    "💱 Enter the coin you want to convert to (e.g., USDT, BNB):"
-  );
-  return ctx.wizard.next();
-});
-
-// Step 5: Handle target currency input and perform conversion
-step4.on("text", async (ctx) => {
-  ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
-
-  // Ensure fromCoin and amount exist before using them
-  if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+    const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
     await ctx.reply(
-      "❌ Conversion failed. Session data is missing. Please restart."
+      `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
     );
+
     return ctx.scene.leave();
+  } else if (callbackData === "convert_crypto") {
+    await ctx.reply(
+      "💱 Enter the coin you want to convert to (e.g., USDT, BNB):"
+    );
+    return ctx.wizard.next();
   }
-
-  console.log(
-    `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
-  );
-
-
-  const price = await getCryptoPrice(
-    ctx.scene.session.fromCoin,
-    ctx.scene.session.toCoin
-  );
-  if (!price) {
-    await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
-    return ctx.scene.leave();
-  }
-
-  const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
-  await ctx.reply(
-    `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} ${ctx.scene.session.toCoin}** 💱`
-  );
-
-  return ctx.scene.leave();
 });
+
+
+// // Step 3: Handle conversion to USD
+// step3.action("convert_usd", async (ctx) => {
+//   await ctx.answerCbQuery();
+//   ctx.scene.session.toCoin = "USD";
+
+//   // Ensure fromCoin and amount exist before using them
+//   if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+//     await ctx.reply(
+//       "❌ Conversion failed. Session data is missing. Please restart."
+//     );
+//     return ctx.scene.leave();
+//   }
+//   console.log(
+//     `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
+//   );
+
+//   const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
+//   if (!price) {
+//     await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
+//     return ctx.scene.leave();
+//   }
+
+//   const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
+//   await ctx.reply(
+//     `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
+//   );
+
+//   return ctx.scene.leave();
+// });
+
+// // Step 4: Ask user for target currency if not converting to USD
+// step3.action("convert_crypto", async (ctx) => {
+//   await ctx.answerCbQuery();
+//   await ctx.reply(
+//     "💱 Enter the coin you want to convert to (e.g., USDT, BNB):"
+//   );
+//   return ctx.wizard.next();
+// });
+
+// // Step 5: Handle target currency input and perform conversion
+// step4.on("text", async (ctx) => {
+//   ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
+
+//   // Ensure fromCoin and amount exist before using them
+//   if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+//     await ctx.reply(
+//       "❌ Conversion failed. Session data is missing. Please restart."
+//     );
+//     return ctx.scene.leave();
+//   }
+
+//   console.log(
+//     `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
+//   );
+
+
+//   const price = await getCryptoPrice(
+//     ctx.scene.session.fromCoin,
+//     ctx.scene.session.toCoin
+//   );
+//   if (!price) {
+//     await ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
+//     return ctx.scene.leave();
+//   }
+
+//   const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
+//   await ctx.reply(
+//     `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} ${ctx.scene.session.toCoin}** 💱`
+//   );
+
+//   return ctx.scene.leave();
+// });
+
+
 
 // Create the scene using the composers
 export const convertScene = new Scenes.WizardScene<
