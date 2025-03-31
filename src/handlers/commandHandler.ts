@@ -1,4 +1,4 @@
-import { Context } from "telegraf";
+import { Context, Markup } from "telegraf";
 import { registerUser } from "../services/userService";
 import { MyContext } from "../interfaces/scenesInterface";
 
@@ -25,7 +25,15 @@ export async function handleCommand(
         userInfo.last_name ?? ""
       );
       return ctx.reply(
-        "👋 Welcome to CryptoBuddy! Use /price <coin> to get prices."
+        `👋 Welcome, ${ctx.from.first_name}!\n\n` +
+        `I am your Crypto Assistant Bot. Choose a feature below to get started:`,
+      Markup.inlineKeyboard([
+        [Markup.button.callback("📢 Crypto News", "go_news")],
+        [Markup.button.callback("📈 Price Alerts", "go_alerts")],
+        [Markup.button.callback("📊 Trading Signals", "go_signals")],
+        [Markup.button.callback("⚙️ Settings", "go_settings")],
+        [Markup.button.callback("ℹ️ Help", "go_help")],
+      ])
       );
     case "convert":
       return ctx.scene.enter("convertScene"); // Start conversion process

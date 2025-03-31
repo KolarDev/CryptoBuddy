@@ -41,12 +41,6 @@ step2.on("text", async (ctx) => {
 
 step3.on("callback_query", async (ctx) => {
   // await ctx.answerCbQuery(); // Acknowledge button click
-  try {
-    await ctx.answerCbQuery();
-} catch (error) {
-    console.error("Error handling callback query:", error);
-}
-
 
   const callbackData = ctx.callback_query.data;
   console.log("Callback Data:", callbackData);
