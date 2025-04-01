@@ -7,7 +7,7 @@ const configSchema = z
     NODE_ENV: z
       .enum(["DEVELOPMENT", "PRODUCTION", "STAGING"])
       .default("DEVELOPMENT")
-      .readonly(),
+      .readonly(),  
     ALLOWED_ORIGINS: z.string().default("*"),
     DATABASE_LOCAL: z.string().min(1, "DATABASE_LOCAL is required!"),
     MONGO_URI: z.string().min(1, "MONGO_URI is required!"),

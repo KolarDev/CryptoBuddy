@@ -26,6 +26,8 @@ const port = config.PORT || 9091;
 
 const server = app.listen(port, async () => {
   console.log(`App listening on port ${port}`);
+  console.log("New Update active 🖐🖐🖐");
+
 
   try {
     await bot.telegram.setWebhook(config.WEBHOOK_URL);
