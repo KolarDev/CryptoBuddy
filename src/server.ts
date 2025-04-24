@@ -14,7 +14,9 @@ const DB_URL = config.MONGO_URI.replace(
   "<db_password>",
   config.MONGO_URI_PASSWORD
 );
+
 const DB = config.NODE_ENV === "PRODUCTION" ? DB_URL : DB_LOCAL; // connect to database based on the environment
+
 mongoose
   .connect(DB)
   .then(() => console.log("Database Connected Succesfully !"))
@@ -27,7 +29,6 @@ const port = config.PORT || 9091;
 const server = app.listen(port, async () => {
   console.log(`App listening on port ${port}`);
   console.log("New Update active 🖐🖐🖐");
-
 
   try {
     await bot.telegram.setWebhook(config.WEBHOOK_URL);
