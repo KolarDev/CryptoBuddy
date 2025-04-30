@@ -22,6 +22,7 @@ const axios_1 = __importDefault(require("axios"));
  */
 function getCryptoPrice(from, to) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(`🖐 In the getCryptoPrice fromCoin ${from} toCoin ${to}`);
         try {
             const { data } = yield axios_1.default.get(`https://api.coingecko.com/api/v3/simple/price?ids=${from}&vs_currencies=${to}`);
             if (!data[from] || !data[from][to]) {

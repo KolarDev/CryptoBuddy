@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleCommand = handleCommand;
+const telegraf_1 = require("telegraf");
 const userService_1 = require("../services/userService");
 function handleCommand(ctx, command, args) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -24,7 +25,14 @@ function handleCommand(ctx, command, args) {
             case "start":
                 console.log("start command working 🖐🖐");
                 yield (0, userService_1.registerUser)(chatId, (_c = userInfo.username) !== null && _c !== void 0 ? _c : "", userInfo.first_name, (_d = userInfo.last_name) !== null && _d !== void 0 ? _d : "");
-                return ctx.reply("👋 Welcome to CryptoBuddy! Use /price <coin> to get prices.");
+                return ctx.reply(`👋 Welcome, ${ctx.from.first_name}!\n\n` +
+                    `I am your Crypto Assistant Bot. Choose a feature below to get started:`, telegraf_1.Markup.inlineKeyboard([
+                    [telegraf_1.Markup.button.callback("📢 Crypto News", "go_news")],
+                    [telegraf_1.Markup.button.callback("📈 Price Alerts", "go_alerts")],
+                    [telegraf_1.Markup.button.callback("📊 Trading Signals", "go_signals")],
+                    [telegraf_1.Markup.button.callback("⚙️ Settings", "go_settings")],
+                    [telegraf_1.Markup.button.callback("ℹ️ Help", "go_help")],
+                ]));
             case "convert":
                 return ctx.scene.enter("convertScene"); // Start conversion process
             default:

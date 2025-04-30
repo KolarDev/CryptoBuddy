@@ -16,7 +16,7 @@ function handleCallbackQuery(ctx) {
         if (ctx.callbackQuery && "data" in ctx.callbackQuery) {
             const callbackData = ctx.callbackQuery.data;
             console.log("Callback data:", callbackData);
-            const chatId = ctx.chat.id;
+            yield ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
             switch (callbackData) {
                 case "price_btc":
                     return null;

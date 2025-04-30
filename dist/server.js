@@ -30,6 +30,7 @@ mongoose
 const port = envSchema_1.config.PORT || 9091;
 const server = app_1.default.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`App listening on port ${port}`);
+    console.log("New Update active 🖐🖐🖐");
     try {
         yield bot_1.default.telegram.setWebhook(envSchema_1.config.WEBHOOK_URL);
         console.log(`✅ Webhook set successfully: ${envSchema_1.config.WEBHOOK_URL}`);

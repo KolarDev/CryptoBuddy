@@ -42,9 +42,13 @@ step2.on("text", async (ctx) => {
 step3.on("callback_query", async (ctx) => {
   await ctx.answerCbQuery(); // Acknowledge button click
 
-  const callbackData = ctx.callbackQuery.data;
-  console.log("Callback Data:", callbackData);
+  const cbq = ctx.callbackQuery;
 
+  if ("data" in cbq) {
+    const callbackData = cbq.data;
+    console.log("Callback Data:", callbackData);
+    
+     // Perform next action based on callback data
   if (callbackData === "convert_usd") {
     ctx.scene.session.toCoin = "USD";
 
@@ -80,6 +84,12 @@ step3.on("callback_query", async (ctx) => {
     );
     return ctx.wizard.next();
   }
+  // Respond error message if there is no callbackdata
+  } else {
+    return ctx.reply("⚠️ Error! No callback data.");
+  }
+
+ 
 });
 
 // Create the scene using the composers

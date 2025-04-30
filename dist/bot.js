@@ -39,6 +39,10 @@ bot.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 // Callback Query Handler
 bot.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    if (ctx.scene.current) {
+        console.log("Scene is active, letting the scene handle the callback.");
+        return;
+    }
     return (0, callbackHandler_1.handleCallbackQuery)(ctx);
 }));
 process.once("SIGINT", () => bot.stop("SIGINT"));

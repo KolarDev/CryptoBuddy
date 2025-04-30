@@ -26,6 +26,3 @@ router.post("/webhook", (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 exports.default = router;
-// curl -X POST "https://cryptobuddy-sst6.onrender.com/webhook" \
-//      -H "Content-Type: application/json" \
-//      -d '{"update_id":123456789, "message":{"message_id":1, "from":{"id":123456, "is_bot":false, "first_name":"Test"}, "chat":{"id":123456, "type":"private"}, "text":"/start"}}'
