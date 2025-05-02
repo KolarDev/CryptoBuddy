@@ -45,7 +45,8 @@ step3.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* 
         return ctx.scene.leave();
     }
     if (choice === "convert_usd") {
-        const price = yield (0, priceService_1.getCryptoPrice)(ctx.scene.session.fromCoin, "USD");
+        const fromCoin = ctx.scene.session.fromCoin;
+        const price = yield (0, priceService_1.getCryptoPrice)(fromCoin, "USD");
         if (!price) {
             yield ctx.reply("❌ Conversion failed. Invalid coin symbol.");
             return ctx.scene.leave();
@@ -63,17 +64,21 @@ step3.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* 
 // Step 4: Handle conversion to another crypto
 step4.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
-    if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+    const fromCoin = ctx.scene.session.fromCoin;
+    const toCoin = ctx.scene.session.toCoin;
+    const amount = ctx.scene.session.amount;
+    if (!fromCoin || !amount) {
         yield ctx.reply("❌ Conversion failed. Missing session data.");
         return ctx.scene.leave();
     }
-    const price = yield (0, priceService_1.getCryptoPrice)(ctx.scene.session.fromCoin, ctx.scene.session.toCoin);
+    // Convert the crypto price based on the provided inputs
+    const price = yield (0, priceService_1.getCryptoPrice)(fromCoin, toCoin);
     if (!price) {
         yield ctx.reply("❌ Conversion failed. Invalid coin symbol.");
         return ctx.scene.leave();
     }
-    const result = (ctx.scene.session.amount * price).toFixed(2);
-    yield ctx.reply(`✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} = **${result} ${ctx.scene.session.toCoin}** 💱`);
+    const result = (amount * price).toFixed(2);
+    yield ctx.reply(`✅ ${amount} ${fromCoin} = **${result} ${toCoin}** 💱`);
     return ctx.scene.leave();
 }));
 // Create the Wizard Scene

@@ -13,26 +13,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCryptoPrice = getCryptoPrice;
+exports.getCoinList = getCoinList;
 const axios_1 = __importDefault(require("axios"));
 /**
  * Fetches the exchange rate between two cryptocurrencies.
- * @param from The base cryptocurrency (e.g., BTC).
- * @param to The target cryptocurrency (e.g., USDT).
+ * @param fromSymbol The base cryptocurrency (e.g., BTC).
+ * @param toSymbol The target cryptocurrency (e.g., USDT).
  * @returns The exchange rate or null if an error occurs.
  */
-function getCryptoPrice(from, to) {
+function getCryptoPrice(fromSymbol, toSymbol) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`🖐 In the getCryptoPrice fromCoin ${from} toCoin ${to}`);
+        console.log(`🔁 Converting ${fromSymbol} to ${toSymbol}`);
+        const coinList = yield getCoinList();
+        const fromId = coinList[fromSymbol.toLowerCase()];
+        const toId = coinList[toSymbol.toLowerCase()];
+        if (!fromId || !toId) {
+            console.warn("❌ Invalid coin symbol(s):", fromSymbol, toSymbol);
+            return null;
+        }
         try {
-            const { data } = yield axios_1.default.get(`https://api.coingecko.com/api/v3/simple/price?ids=${from}&vs_currencies=${to}`);
-            if (!data[from] || !data[from][to]) {
-                return null; // Let convertScene handle the invalid response
+            const { data } = yield axios_1.default.get(`https://api.coingecko.com/api/v3/simple/price?ids=${fromId}&vs_currencies=${toId}`);
+            if (!data[fromId] || !data[fromId][toId]) {
+                return null;
             }
-            return data[from][to]; // Return only the price
+            return data[fromId][toId];
         }
         catch (error) {
-            console.error("Error fetching crypto price:", error);
-            return null; // Return null on failure
+            console.error("❌ Error fetching crypto price:", error);
+            return null;
+        }
+    });
+}
+let coinListCache = {};
+function getCoinList() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (Object.keys(coinListCache).length > 0)
+            return coinListCache;
+        try {
+            const { data } = yield axios_1.default.get("https://api.coingecko.com/api/v3/coins/list");
+            coinListCache = data.reduce((map, coin) => {
+                map[coin.symbol.toLowerCase()] = coin.id;
+                return map;
+            }, {});
+            return coinListCache;
+        }
+        catch (err) {
+            console.error("❌ Error fetching CoinGecko coin list:", err);
+            return {};
         }
     });
 }
