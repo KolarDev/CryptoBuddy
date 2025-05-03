@@ -10,7 +10,7 @@ import axios from "axios";
 export async function getCryptoPrice(
   fromSymbol: string,
   toSymbol: string
-): Promise<number | null> {
+): Promise<{ price: number | null; error?: string }> {
   console.log(`🔁 Converting ${fromSymbol} to ${toSymbol}`);
 
   const coinList = await getCoinList();
@@ -18,8 +18,10 @@ export async function getCryptoPrice(
   const toId = coinList[toSymbol.toLowerCase()];
 
   if (!fromId || !toId) {
-    console.warn("❌ Invalid coin symbol(s):", fromSymbol, toSymbol);
-    return null;
+    return {
+      price: null,
+      error: `❌ Invalid coin symbol(s):, ${fromSymbol}, ${toSymbol}`,
+    };
   }
 
   try {
@@ -28,13 +30,16 @@ export async function getCryptoPrice(
     );
 
     if (!data[fromId] || !data[fromId][toId]) {
-      return null;
+      return {
+        price: null,
+        error: `❌ Coin price unavailable:, ${fromSymbol}, ${toSymbol}`,
+      };
     }
 
-    return data[fromId][toId];
+    return { price: data[fromId][toId] };
   } catch (error) {
     console.error("❌ Error fetching crypto price:", error);
-    return null;
+    return { price: null, error: `❌ Error fetching crypto price:", ${error}` };
   }
 }
 

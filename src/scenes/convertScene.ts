@@ -47,49 +47,54 @@ step3.on("callback_query", async (ctx) => {
   if ("data" in cbq) {
     const callbackData = cbq.data;
     console.log("Callback Data:", callbackData);
-    
-     // Perform next action based on callback data
-  if (callbackData === "convert_usd") {
-    ctx.scene.session.toCoin = "USD";
 
-    // Ensure fromCoin and amount exist before using them
-    if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
-      await ctx.reply(
-        "❌ Conversion failed. Session data is missing. Please restart."
+    // Perform next action based on callback data
+    if (callbackData === "convert_usd") {
+      ctx.scene.session.toCoin = "USD";
+
+      // Ensure fromCoin and amount exist before using them
+      if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+        await ctx.reply(
+          "❌ Conversion failed. Session data is missing. Please restart."
+        );
+        return ctx.scene.leave();
+      }
+
+      console.log(
+        `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
       );
-      return ctx.scene.leave();
-    }
 
-    console.log(
-      `fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`
-    );
-
-    const price = await getCryptoPrice(ctx.scene.session.fromCoin, "USD");
-    if (!price) {
-      await ctx.reply(
-        "❌ Conversion failed. Check coin symbols and try again."
+      const { price, error } = await getCryptoPrice(
+        ctx.scene.session.fromCoin,
+        "USD"
       );
+      if (error) {
+        await ctx.reply(error);
+        return ctx.scene.leave();
+      }
+      if (price === null) {
+        await ctx.reply(
+          "Unable to get the price. Check the coin symbols and try again."
+        );
+        return ctx.scene.leave();
+      }
+
+      const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
+      await ctx.reply(
+        `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
+      );
+
       return ctx.scene.leave();
+    } else if (callbackData === "convert_crypto") {
+      await ctx.reply(
+        "💱 Enter the coin you want to convert to (e.g., USDT, BNB):"
+      );
+      return ctx.wizard.next();
     }
-
-    const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
-    await ctx.reply(
-      `✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`
-    );
-
-    return ctx.scene.leave();
-  } else if (callbackData === "convert_crypto") {
-    await ctx.reply(
-      "💱 Enter the coin you want to convert to (e.g., USDT, BNB):"
-    );
-    return ctx.wizard.next();
-  }
-  // Respond error message if there is no callbackdata
+    // Respond error message if there is no callbackdata
   } else {
     return ctx.reply("⚠️ Error! No callback data.");
   }
-
- 
 });
 
 // Create the scene using the composers
