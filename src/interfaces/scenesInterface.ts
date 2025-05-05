@@ -11,6 +11,12 @@ export interface ConvertSceneSession extends BaseWizardSession {
   inCoin?: string;
 }
 
+// News subscription Scene session (specific to news subscription logic)
+export interface NewsSceneSession extends BaseWizardSession {
+  fromCoin?: string;
+  amount?: number;
+}
+
 interface MySession<S extends BaseWizardSession = BaseWizardSession>
   extends Scenes.WizardSession<S> {
   globalSessionProp: string;
