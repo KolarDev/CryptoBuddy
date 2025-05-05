@@ -44,22 +44,31 @@ step3.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* 
     if ("data" in cbq) {
         const callbackData = cbq.data;
         console.log("Callback Data:", callbackData);
+        const fromCoin = ctx.scene.session.fromCoin;
+        const amount = ctx.scene.session.amount;
         // Perform next action based on callback data
         if (callbackData === "convert_usd") {
             ctx.scene.session.toCoin = "USD";
+            const fromCoin = ctx.scene.session.fromCoin;
+            const amount = ctx.scene.session.amount;
+            const toCoin = ctx.scene.session.toCoin;
             // Ensure fromCoin and amount exist before using them
-            if (!ctx.scene.session.fromCoin || !ctx.scene.session.amount) {
+            if (!fromCoin || !amount) {
                 yield ctx.reply("❌ Conversion failed. Session data is missing. Please restart.");
                 return ctx.scene.leave();
             }
-            console.log(`fromCoin ${ctx.scene.session.fromCoin} toCoin ${ctx.scene.session.toCoin} amount ${ctx.scene.session.amount}`);
-            const price = yield (0, priceService_1.getCryptoPrice)(ctx.scene.session.fromCoin, "USD");
-            if (!price) {
-                yield ctx.reply("❌ Conversion failed. Check coin symbols and try again.");
+            console.log(`fromCoin ${fromCoin} toCoin ${toCoin} amount ${amount}`);
+            const { price, error } = yield (0, priceService_1.getCryptoPrice)(fromCoin, "USD");
+            if (error) {
+                yield ctx.reply(error);
                 return ctx.scene.leave();
             }
-            const convertedAmount = (ctx.scene.session.amount * price).toFixed(2);
-            yield ctx.reply(`✅ ${ctx.scene.session.amount} ${ctx.scene.session.fromCoin} is **${convertedAmount} USD** 💱`);
+            if (price === null) {
+                yield ctx.reply("Unable to get the price. Check the coin symbols and try again.");
+                return ctx.scene.leave();
+            }
+            const result = (amount * price).toFixed(2);
+            yield ctx.reply(`✅ ${amount} ${fromCoin} is **${result} USD** 💱`);
             return ctx.scene.leave();
         }
         else if (callbackData === "convert_crypto") {
@@ -71,6 +80,29 @@ step3.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* 
     else {
         return ctx.reply("⚠️ Error! No callback data.");
     }
+}));
+// Step 4: Handle conversion to another crypto
+step4.on("text", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    ctx.scene.session.toCoin = ctx.message.text.toUpperCase();
+    const fromCoin = ctx.scene.session.fromCoin;
+    const amount = ctx.scene.session.amount;
+    const toCoin = ctx.scene.session.toCoin;
+    if (!fromCoin || !amount) {
+        yield ctx.reply("❌ Conversion failed. Missing session data.");
+        return ctx.scene.leave();
+    }
+    const { price, error } = yield (0, priceService_1.getCryptoPrice)(fromCoin, toCoin);
+    if (error) {
+        yield ctx.reply(error);
+        return ctx.scene.leave();
+    }
+    if (price === null) {
+        yield ctx.reply("Unable to get the price. Check the coin symbols and try again.");
+        return ctx.scene.leave();
+    }
+    const result = (amount * price).toFixed(2);
+    yield ctx.reply(`✅ ${amount} ${fromCoin} = **${result} ${toCoin}** 💱`);
+    return ctx.scene.leave();
 }));
 // Create the scene using the composers
 exports.convertScene = new telegraf_1.Scenes.WizardScene("convertScene", (ctx) => __awaiter(void 0, void 0, void 0, function* () {

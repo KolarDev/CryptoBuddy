@@ -28,19 +28,24 @@ function getCryptoPrice(fromSymbol, toSymbol) {
         const fromId = coinList[fromSymbol.toLowerCase()];
         const toId = coinList[toSymbol.toLowerCase()];
         if (!fromId || !toId) {
-            console.warn("❌ Invalid coin symbol(s):", fromSymbol, toSymbol);
-            return null;
+            return {
+                price: null,
+                error: `❌ Invalid coin symbol(s):, ${fromSymbol}, ${toSymbol}`,
+            };
         }
         try {
             const { data } = yield axios_1.default.get(`https://api.coingecko.com/api/v3/simple/price?ids=${fromId}&vs_currencies=${toId}`);
             if (!data[fromId] || !data[fromId][toId]) {
-                return null;
+                return {
+                    price: null,
+                    error: `❌ Coin price unavailable:, ${fromSymbol}, ${toSymbol}`,
+                };
             }
-            return data[fromId][toId];
+            return { price: data[fromId][toId] };
         }
         catch (error) {
             console.error("❌ Error fetching crypto price:", error);
-            return null;
+            return { price: null, error: `❌ Error fetching crypto price:", ${error}` };
         }
     });
 }

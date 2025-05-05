@@ -32,7 +32,9 @@
 //   const type = typeMap[args];
 //   if (!type) return ctx.reply("⚠️ Invalid subscription type!");
 //   if (await isSubscribed(chatId, type)) {
-//     return ctx.reply(`✅ You are already subscribed to ${type.replace("_", " ")}`);
+//     return ctx.reply(
+//       `✅ You are already subscribed to ${type.replace("_", " ")}`
+//     );
 //   }
 //   await addSubscription(chatId, type);
 //   ctx.reply(`🎉 You have subscribed to ${type.replace("_", " ")} updates!`);

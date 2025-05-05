@@ -12,22 +12,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleCallbackQuery = handleCallbackQuery;
 function handleCallbackQuery(ctx) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a;
+        var _a, _b, _c, _d, _e, _f, _g;
+        yield ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
+        // Check if callbackdata and neccessary data exists
         if (ctx.callbackQuery && "data" in ctx.callbackQuery) {
             const callbackData = ctx.callbackQuery.data;
             console.log("Callback data:", callbackData);
-            yield ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
+            if (!ctx.chat || !ctx.from) {
+                console.error("Missing chat or user information.");
+                return (_a = ctx.reply) === null || _a === void 0 ? void 0 : _a.call(ctx, "⚠️ Unable to process request.");
+            }
             switch (callbackData) {
-                case "price_btc":
-                    return null;
-                case "price_eth":
-                    return null;
+                case "go_convert":
+                    return ctx.scene.enter("convertScene"); // Start conversion process
+                case "go_news":
+                    return (_b = ctx.reply) === null || _b === void 0 ? void 0 : _b.call(ctx, "⚠️ Feature coming soon.");
+                case "go_alerts":
+                    return (_c = ctx.reply) === null || _c === void 0 ? void 0 : _c.call(ctx, "⚠️ Feature coming soon.");
+                case "go_signals":
+                    return (_d = ctx.reply) === null || _d === void 0 ? void 0 : _d.call(ctx, "⚠️ Feature coming soon.");
+                case "go_settings":
+                    return (_e = ctx.reply) === null || _e === void 0 ? void 0 : _e.call(ctx, "⚠️ Feature coming soon.");
+                case "go_help":
+                    return (_f = ctx.reply) === null || _f === void 0 ? void 0 : _f.call(ctx, "⚠️ Feature coming soon.");
                 default:
                     return ctx.reply("⚠️ Unknown action.");
             }
         }
         else {
-            return (_a = ctx.reply) === null || _a === void 0 ? void 0 : _a.call(ctx, "⚠️ Unable to process request. Data is undefined");
+            return (_g = ctx.reply) === null || _g === void 0 ? void 0 : _g.call(ctx, "⚠️ Unable to process request. Data is undefined");
         }
     });
 }
