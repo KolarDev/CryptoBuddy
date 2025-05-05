@@ -1,18 +1,31 @@
 import { Context } from "telegraf";
+import { MyContext } from "../interfaces/scenesInterface";
 
-export async function handleCallbackQuery(ctx: Context) {
+export async function handleCallbackQuery(ctx: MyContext) {
+  await ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
+  // Check if callbackdata and neccessary data exists
   if (ctx.callbackQuery && "data" in ctx.callbackQuery) {
     const callbackData = ctx.callbackQuery.data;
     console.log("Callback data:", callbackData);
 
-    await ctx.answerCbQuery(); // ✅ Always acknowledge the callback query
-
+    if (!ctx.chat || !ctx.from) {
+      console.error("Missing chat or user information.");
+      return ctx.reply?.("⚠️ Unable to process request.");
+    }
 
     switch (callbackData) {
-      case "price_btc":
-        return null;
-      case "price_eth":
-        return null;
+      case "go_convert":
+        return ctx.scene.enter("convertScene"); // Start conversion process
+      case "go_news":
+        return ctx.reply?.("⚠️ Feature coming soon.");
+      case "go_alerts":
+        return ctx.reply?.("⚠️ Feature coming soon.");
+      case "go_signals":
+        return ctx.reply?.("⚠️ Feature coming soon.");
+      case "go_settings":
+        return ctx.reply?.("⚠️ Feature coming soon.");
+      case "go_help":
+        return ctx.reply?.("⚠️ Feature coming soon.");
 
       default:
         return ctx.reply("⚠️ Unknown action.");
