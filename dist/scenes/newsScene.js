@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertScene = void 0;
+exports.newsScene = void 0;
 const telegraf_1 = require("telegraf");
 const subscriptionService_1 = require("../services/subscriptionService");
 // Create a composer to manage handlers
@@ -54,7 +54,7 @@ step2.on("callback_query", (ctx) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 // Create the scene using the composers
-exports.convertScene = new telegraf_1.Scenes.WizardScene("newsScene", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+exports.newsScene = new telegraf_1.Scenes.WizardScene("newsScene", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.reply("📰 What type of news are you interested in?", telegraf_1.Markup.inlineKeyboard([
         [telegraf_1.Markup.button.callback("🪙 Crypto News", "news_crypto")],
         [telegraf_1.Markup.button.callback("📈 Trading Signals", "news_trading")],

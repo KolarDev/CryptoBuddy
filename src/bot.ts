@@ -1,6 +1,11 @@
 import { Telegraf, Context, Scenes, session } from "telegraf";
 import { config } from "./config/envSchema";
-import { BaseWizardSession, MyContext } from "./interfaces/scenesInterface";
+import {
+  BaseWizardSession,
+  MyContext,
+  ConvertSceneSession,
+  NewsSceneSession,
+} from "./interfaces/scenesInterface";
 import { convertScene } from "./scenes/convertScene";
 import { newsScene } from "./scenes/newsScene";
 import { handleMessage } from "./handlers/messageHandler";
@@ -13,10 +18,7 @@ import { handleCallbackQuery } from "./handlers/callbackHandler";
 const bot = new Telegraf<MyContext>(config.TELEGRAM_BOT_TOKEN!);
 
 // Register Scene
-const stage = new Scenes.Stage<MyContext<BaseWizardSession>>([
-  convertScene,
-  newsScene,
-]);
+const stage = new Scenes.Stage([convertScene, newsScene]);
 
 // Middleware
 bot.use(session()); // Enable session
