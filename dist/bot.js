@@ -20,10 +20,7 @@ const callbackHandler_1 = require("./handlers/callbackHandler");
 // Create bot instance with the correct context type
 const bot = new telegraf_1.Telegraf(envSchema_1.config.TELEGRAM_BOT_TOKEN);
 // Register Scene
-const stage = new telegraf_1.Scenes.Stage([
-    convertScene_1.convertScene,
-    newsScene_1.newsScene,
-]);
+const stage = new telegraf_1.Scenes.Stage([convertScene_1.convertScene, newsScene_1.newsScene]);
 // Middleware
 bot.use((0, telegraf_1.session)()); // Enable session
 bot.use(stage.middleware()); // Enable scenes

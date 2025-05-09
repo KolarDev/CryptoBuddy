@@ -17,7 +17,7 @@ export async function handleCallbackQuery(ctx: MyContext) {
       case "go_convert":
         return ctx.scene.enter("convertScene"); // Start conversion process
       case "go_news":
-        return ctx.reply?.("⚠️ Feature coming soon.");
+        return ctx.scene.enter("newsScene");
       case "go_alerts":
         return ctx.reply?.("⚠️ Feature coming soon.");
       case "go_signals":

@@ -13,7 +13,7 @@ export interface ConvertSceneSession extends BaseWizardSession {
 
 // News subscription Scene session (specific to news subscription logic)
 export interface NewsSceneSession extends BaseWizardSession {
-  selectedType: string;
+  selectedType?: string;
   fromCoin?: string;
   amount?: number;
 }

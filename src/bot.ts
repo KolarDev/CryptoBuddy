@@ -18,7 +18,7 @@ import { handleCallbackQuery } from "./handlers/callbackHandler";
 const bot = new Telegraf<MyContext>(config.TELEGRAM_BOT_TOKEN!);
 
 // Register Scene
-const stage = new Scenes.Stage([convertScene, newsScene]);
+const stage = new Scenes.Stage<MyContext>([convertScene, newsScene]);
 
 // Middleware
 bot.use(session()); // Enable session

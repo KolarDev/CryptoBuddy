@@ -38,7 +38,9 @@ export async function handleCommand(
       );
     case "convert":
       return ctx.scene.enter("convertScene"); // Start conversion process
-
+    case "news":
+      return ctx.scene.enter("newsScene"); // Start conversion process
+  
     default:
       return ctx.reply("⚠️ Unknown command. Try /price <coin>.");
   }
