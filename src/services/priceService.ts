@@ -62,3 +62,5 @@ export async function getCoinList(): Promise<{ [symbol: string]: string }> {
     return {};
   }
 }
+
+
