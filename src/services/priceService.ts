@@ -1,4 +1,6 @@
 import axios from "axios";
+import { config } from "./../config/envSchema";
+
 /**
  * Fetches the exchange rate between two cryptocurrencies.
  * @param fromSymbol The base cryptocurrency (e.g., BTC).
@@ -9,7 +11,7 @@ import axios from "axios";
 
 
 const CMC_BASE_URL = "https://pro-api.coinmarketcap.com/v1";
-const API_KEY = process.env.CMC_API_KEY!;
+const API_KEY = config.CMC_API_KEY!;
 
 
 export async function getCryptoPrice(

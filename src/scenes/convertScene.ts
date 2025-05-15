@@ -67,7 +67,7 @@ step3.on("callback_query", async (ctx) => {
 
       console.log(`fromCoin ${fromCoin} toCoin ${toCoin} amount ${amount}`);
 
-      const { price, error } = await getCryptoPrice(fromCoin, "USD");
+      const { price, error } = await getCryptoPrice(fromCoin, toCoin);
       if (error) {
         await ctx.reply(error);
         return ctx.scene.leave();
