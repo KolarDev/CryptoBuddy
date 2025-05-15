@@ -62,11 +62,12 @@ step2.on("callback_query", async (ctx) => {
         `🚫 Unsubscribed from *${type.replace("_", " ")}*.`,
         { parse_mode: "Markdown" }
       );
-    } else if (action === "read_news") {
-      await ctx.editMessageText(
-        ` 🖐 News feature coming soon *${type.replace("_", " ")}*.`,
-        { parse_mode: "Markdown" }
-      );
+    } 
+    // else if (action === "read_news") {
+    //   await ctx.editMessageText(
+    //     ` 🖐 News feature coming soon.`,
+    //     { parse_mode: "Markdown" }
+    //   );
 
     return ctx.scene.reenter(); // Restart the scene
   }
