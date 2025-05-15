@@ -27,6 +27,7 @@ step1.on("callback_query", async (ctx) => {
       {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
+          [Markup.button.callback("✅ Read News", "read_news")],
           [Markup.button.callback("✅ Subscribe", "subscribe")],
           [Markup.button.callback("🚫 Unsubscribe", "unsubscribe")],
         ]),
@@ -61,7 +62,11 @@ step2.on("callback_query", async (ctx) => {
         `🚫 Unsubscribed from *${type.replace("_", " ")}*.`,
         { parse_mode: "Markdown" }
       );
-    }
+    } else if (action === "read_news") {
+      await ctx.editMessageText(
+        ` 🖐 News feature coming soon *${type.replace("_", " ")}*.`,
+        { parse_mode: "Markdown" }
+      );
 
     return ctx.scene.reenter(); // Restart the scene
   }

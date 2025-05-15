@@ -1,25 +1,22 @@
-// import { MongoClient } from "mongodb";
-// import { config } from "../config/envSchema";
-// import { Subscriber } from "../models/subscribeModel";
+// services/newsFetcher.ts
+import axios from "axios";
+import { config } from "./../config/envSchema";
 
-// // Add a subscriber
-// export async function addSubscriber(chatId: number) {
-//   await subscribers.updateOne({ chatId }, { $set: { chatId } }, { upsert: true });
-// }
+export async function fetchCryptoNews(): Promise<string[]> {
+  try {
+    const { data } = await axios.get("https://newsdata.io/api/1/news", {
+      params: {
+        apikey: config.NEWSDATA_API_KEY,
+        q: "crypto",
+        language: "en",
+        category: "business",
+      },
+    });
 
-// // Remove a subscriber
-// export async function removeSubscriber(chatId: number) {
-//   await subscribers.deleteOne({ chatId });
-// }
-
-// // Check if user is subscribed
-// export async function isSubscribed(chatId: number): Promise<boolean> {
-//   const user = await subscribers.findOne({ chatId });
-//   return !!user;
-// }
-
-// // Get all subscribers
-// export async function getAllSubscribers(): Promise<number[]> {
-//   const users = await subscribers.find().toArray();
-//   return users.map((user) => user.chatId);
-// }
+    const results = data.results || [];
+    return results.slice(0, 5).map((item: any) => `📰 ${item.title}\n🔗 ${item.link}`);
+  } catch (error) {
+    console.error("❌ Failed to fetch news:", error);
+    return ["❌ Unable to fetch news at this time."];
+  }
+}
