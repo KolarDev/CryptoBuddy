@@ -1,5 +1,4 @@
 import axios from "axios";
-
 /**
  * Fetches the exchange rate between two cryptocurrencies.
  * @param fromSymbol The base cryptocurrency (e.g., BTC).
@@ -7,60 +6,80 @@ import axios from "axios";
  * @returns The exchange rate or null if an error occurs.
  */
 
+
+
+const CMC_BASE_URL = "https://pro-api.coinmarketcap.com/v1";
+const API_KEY = process.env.CMC_API_KEY!;
+
+
 export async function getCryptoPrice(
-  fromSymbol: string,
-  toSymbol: string
+  rawFrom: string,
+  rawTo: string,
+  amount: number = 1
 ): Promise<{ price: number | null; error?: string }> {
-  console.log(`🔁 Converting ${fromSymbol} to ${toSymbol}`);
+  await loadSupportedCoins();
 
-  const coinList = await getCoinList();
-  const fromId = coinList[fromSymbol.toLowerCase()];
-  const toId = coinList[toSymbol.toLowerCase()];
+  const fromSymbol = coinMapCache[rawFrom.toLowerCase()];
+  const toSymbol = coinMapCache[rawTo.toLowerCase()];
 
-  if (!fromId || !toId) {
+  if (!fromSymbol || !toSymbol) {
     return {
       price: null,
-      error: `❌ Invalid coin symbol(s):, ${fromSymbol}, ${toSymbol}`,
+      error: `❌ Unsupported coin(s): ${!fromSymbol ? rawFrom : ""} ${
+        !toSymbol ? rawTo : ""
+      }`,
     };
   }
 
   try {
-    const { data } = await axios.get(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${fromId}&vs_currencies=${toId}`
-    );
+    const response = await axios.get(`${CMC_BASE_URL}/tools/price-conversion`, {
+      params: {
+        amount,
+        symbol: fromSymbol,
+        convert: toSymbol,
+      },
+      headers: {
+        "X-CMC_PRO_API_KEY": API_KEY,
+      },
+    });
 
-    if (!data[fromId] || !data[fromId][toId]) {
+    const price = response.data.data?.quote?.[toSymbol]?.price;
+
+    if (!price) {
       return {
         price: null,
-        error: `❌ Coin price unavailable:, ${fromSymbol}, ${toSymbol}`,
+        error: `❌ Conversion data not available for ${fromSymbol} to ${toSymbol}`,
       };
     }
 
-    return { price: data[fromId][toId] };
-  } catch (error) {
-    console.error("❌ Error fetching crypto price:", error);
-    return { price: null, error: `❌ Error fetching crypto price:", ${error}` };
+    return { price };
+  } catch (error: any) {
+    console.error("❌ CoinMarketCap Error:", error?.response?.data || error.message);
+    return { price: null, error: "❌ Failed to fetch price from CoinMarketCap." };
   }
 }
 
-let coinListCache: { [symbol: string]: string } = {};
 
-export async function getCoinList(): Promise<{ [symbol: string]: string }> {
-  if (Object.keys(coinListCache).length > 0) return coinListCache;
+
+let coinMapCache: Record<string, string> = {}; // name/symbol (lowercase) => actual symbol
+
+/**
+ * Fetch and cache supported coin symbols from CMC
+ */
+export async function loadSupportedCoins(): Promise<void> {
+  if (Object.keys(coinMapCache).length > 0) return;
 
   try {
-    const { data } = await axios.get(
-      "https://api.coingecko.com/api/v3/coins/list"
-    );
-    coinListCache = data.reduce((map: any, coin: any) => {
-      map[coin.symbol.toLowerCase()] = coin.id;
-      return map;
-    }, {});
-    return coinListCache;
+    const { data } = await axios.get(`${CMC_BASE_URL}/cryptocurrency/map`, {
+      headers: { "X-CMC_PRO_API_KEY": API_KEY },
+    });
+
+    for (const coin of data.data) {
+      coinMapCache[coin.symbol.toLowerCase()] = coin.symbol;
+      coinMapCache[coin.name.toLowerCase()] = coin.symbol;
+    }
   } catch (err) {
-    console.error("❌ Error fetching CoinGecko coin list:", err);
-    return {};
+    console.error("❌ Failed to load supported coins:", err);
   }
 }
-
 
