@@ -52,7 +52,7 @@ step3.on("callback_query", async (ctx) => {
 
     // Perform next action based on callback data
     if (callbackData === "convert_usd") {
-      ctx.scene.session.toCoin = "USD";
+      ctx.scene.session.toCoin = "USDT";
       const fromCoin = ctx.scene.session.fromCoin;
       const amount = ctx.scene.session.amount;
       const toCoin = ctx.scene.session.toCoin;
