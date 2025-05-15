@@ -15,6 +15,7 @@ const configSchema = z
     TELEGRAM_BOT_TOKEN: z.string(),
     WEBHOOK_URL: z.string().url(),
     CMC_API_KEY: z.string().optional(),
+    NEWSDATA_API_KEY: z.string().optional(),
     MAIL_HOST: z.string().optional(),
     MAIL_PORT: z.coerce.number().optional(),
     MAIL_USERNAME: z.string().optional(),
