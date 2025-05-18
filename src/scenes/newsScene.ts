@@ -1,5 +1,6 @@
 import { Scenes, Composer, Markup } from "telegraf";
 import { MyContext, NewsSceneSession } from "../interfaces/scenesInterface";
+import { fetchCryptoNews } from "../services/newsService";
 import {
   addSubscription,
   removeSubscription,
@@ -62,12 +63,12 @@ step2.on("callback_query", async (ctx) => {
         `🚫 Unsubscribed from *${type.replace("_", " ")}*.`,
         { parse_mode: "Markdown" }
       );
-    } 
-    // else if (action === "read_news") {
-    //   await ctx.editMessageText(
-    //     ` 🖐 News feature coming soon.`,
-    //     { parse_mode: "Markdown" }
-    //   );
+    } else if (action === "read_news") {
+      const news = await fetchCryptoNews();
+      await ctx.editMessageText(
+       news.toString(),
+        { parse_mode: "Markdown" }
+      );
 
     return ctx.scene.reenter(); // Restart the scene
   }
