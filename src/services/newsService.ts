@@ -14,7 +14,10 @@ export async function fetchCryptoNews(): Promise<string[]> {
     });
 
     const results = data.results || [];
-    return results.slice(0, 5).map((item: any) => `📰 ${item.title}\n🔗 ${item.link}`);
+    console.log(results);
+    return results
+      .slice(0, 5)
+      .map((item: any) => `📰 ${item.title}\n🔗 ${item.link}`);
   } catch (error) {
     console.error("❌ Failed to fetch news:", error);
     return ["❌ Unable to fetch news at this time."];
