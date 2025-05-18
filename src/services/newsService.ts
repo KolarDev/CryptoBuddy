@@ -4,6 +4,7 @@ import { config } from "./../config/envSchema";
 
 export async function fetchCryptoNews(): Promise<string[]> {
   try {
+    // query with the params
     const { data } = await axios.get("https://newsdata.io/api/1/news", {
       params: {
         apikey: config.NEWSDATA_API_KEY,
