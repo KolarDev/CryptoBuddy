@@ -7,7 +7,7 @@ export async function fetchCryptoNews(): Promise<{
   error?: string;
 }> {
   try {
-    // query with the params
+    // Make news request to the news api
     const { data } = await axios.get("https://newsdata.io/api/1/news", {
       params: {
         apikey: config.NEWSDATA_API_KEY,
@@ -17,11 +17,17 @@ export async function fetchCryptoNews(): Promise<{
       },
     });
 
+    if (data.status !== "success") {
+      return { results: null, error: "❌ Error fetching news." };
+    }
+
     const results = data.results || [];
-    console.log(results);
+    // Pick only the first first news
     const newsResults = results
       .slice(0, 5)
       .map((item: any) => `📰 ${item.title}\n🔗 ${item.link}`);
+    console.log(newsResults);
+
     return { results: newsResults };
   } catch (error) {
     console.error("❌ Failed to fetch news:", error);

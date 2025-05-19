@@ -65,12 +65,10 @@ step2.on("callback_query", async (ctx) => {
       );
     } else if (action === "read_news") {
       const news = await fetchCryptoNews();
-      await ctx.editMessageText(
-       news.toString(),
-        { parse_mode: "Markdown" }
-      );
+      await ctx.reply(news.toString());
 
-    return ctx.scene.reenter(); // Restart the scene
+      return ctx.scene.reenter(); // Restart the scene
+    }
   }
 });
 
