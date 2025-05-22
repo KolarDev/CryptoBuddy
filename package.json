@@ -4,7 +4,7 @@
   "description": "This is a crypto telegram bot using node.js",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "ts-node src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
