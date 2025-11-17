@@ -1,4 +1,4 @@
-import { User } from "../models/userModel";
+import { User } from "../models/user";
 import { sendMessage } from "../config/axios";
 
 export async function registerUser(
