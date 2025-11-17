@@ -1,7 +1,7 @@
 import { Markup, Scenes, Composer } from "telegraf";
 import { AlertSceneSession, MyContext } from "../interfaces/scenesInterface";
-// NOTE: You would need to create this service to save the alert to your database
-// import { savePriceAlert } from "../services/alertService"; 
+import { savePriceAlert } from "../services/alertService"; 
+import { getCryptoPrice } from "../services/priceService";
 
 // Create composers for each step
 const step1 = new Composer<MyContext<AlertSceneSession>>();
@@ -16,6 +16,26 @@ step1.on("text", async (ctx) => {
   if (symbol.length < 2 || symbol.length > 5) {
     return ctx.reply("⚠️ Please enter a valid coin symbol (e.g., BTC, ETH).");
   }
+
+  // 1. Fetch the current price against USDT
+  const { price, error } = await getCryptoPrice(symbol, "USDT");
+
+  if (error || price === null) {
+    // Check if the error is due to an unsupported coin
+    if (error && error.includes("Unsupported coin")) {
+        return ctx.reply(`❌ **${symbol}** is an unsupported coin. Please enter a valid symbol.`);
+    }
+    // General error
+    return ctx.reply(`❌ Failed to fetch the current price for **${symbol}**. Please try again later or check the symbol.`);
+  }
+
+  // Format the price for display
+  const currentPrice = price.toFixed(2);
+  ctx.scene.session.coinSymbol = symbol;
+
+  let message = `✅ Tracking **${symbol}**.\n\n`;
+  message += `**Current Price:** **$${currentPrice}**\n\n`;
+  message += `Now, choose the alert type:`;
 
   ctx.scene.session.coinSymbol = symbol;
 
@@ -65,7 +85,8 @@ step3.on("text", async (ctx) => {
   if (isNaN(price) || price <= 0) {
     return ctx.reply("⚠️ Please enter a valid positive price amount.");
   }
-
+  
+  const chatId = ctx.from!.id;
   const { coinSymbol, alertType } = ctx.scene.session;
   
   if (!coinSymbol || !alertType) {
@@ -75,20 +96,22 @@ step3.on("text", async (ctx) => {
 
   ctx.scene.session.targetPrice = price;
 
-  // 1. You would call your service here to save the alert to the DB
-  /* await savePriceAlert(
-    ctx.from.id, 
-    coinSymbol, 
-    price, 
-    alertType
-  ); 
-  */
+  try {
+    // 1. CALL THE SERVICE TO SAVE THE ALERT
+    await savePriceAlert(
+      chatId,
+      coinSymbol,
+      price,
+      alertType
+    );
 
-  const conditionText = alertType === 'RISE' ? 'rise to' : 'fall below';
-  const message = `✅ Alert Set!\n\nI will notify you when **${coinSymbol}** happens to **${conditionText} $${price}**.`;
+    const conditionText = alertType === 'RISE' ? 'rise to' : 'fall below';
+    const message = `✅ Alert Set!\n\nI will notify you when **${coinSymbol}** happens to **${conditionText} $${price}**.`;
 
-  await ctx.reply(message);
-  
+    await ctx.reply(message);
+  } catch (error) {
+    await ctx.reply("❌ There was an error saving your alert. Please try again.");
+  }
   // NOTE: You need a background job (cron/interval) to periodically check coin prices
   // and trigger these alerts!
 

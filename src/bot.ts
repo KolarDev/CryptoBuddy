@@ -8,7 +8,7 @@ import {
 } from "./interfaces/scenesInterface";
 import { convertScene } from "./scenes/convertScene";
 import { newsScene } from "./scenes/newsScene";
-import { alertScene } from "./scenes/priceAlertScene";
+import { alertScene } from "./scenes/alertScene";
 import { handleMessage } from "./handlers/messageHandler";
 import { handleCommand } from "./handlers/commandHandler";
 import { validateContext } from "./middlewares/validateContext";
