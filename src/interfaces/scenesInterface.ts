@@ -18,6 +18,12 @@ export interface NewsSceneSession extends BaseWizardSession {
   amount?: number;
 }
 
+export interface AlertSceneSession extends BaseWizardSession {
+  coinSymbol?: string; // The coin the user wants to track (e.g., BTC)
+  targetPrice?: number; // The price threshold (e.g., 60000)
+  alertType?: 'RISE' | 'FALL'; // The condition for the alert
+}
+
 interface MySession<S extends BaseWizardSession = BaseWizardSession>
   extends Scenes.WizardSession<S> {
   globalSessionProp: string;

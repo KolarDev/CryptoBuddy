@@ -19,7 +19,7 @@ export async function handleCallbackQuery(ctx: MyContext) {
       case "go_news":
         return ctx.scene.enter("newsScene");
       case "go_alerts":
-        return ctx.reply?.("⚠️ Feature coming soon.");
+        return ctx.scene.enter("alertScene");
       case "go_signals":
         return ctx.reply?.("⚠️ Feature coming soon.");
       case "go_settings":
