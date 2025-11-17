@@ -1,4 +1,4 @@
-import { Subscription } from "../models/subscribeModel";
+import { Subscription } from "../models/subscribe";
 
 // Add a subscription type to a user
 export async function addSubscription(chatId: number, type: string) {
