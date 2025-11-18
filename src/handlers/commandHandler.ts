@@ -25,7 +25,7 @@ export async function handleCommand(
         userInfo.last_name ?? ""
       );
       return ctx.reply(
-        `👋 Welcome, ${ctx.from.first_name}!\n\n` +
+        `👋 Welcome, ${ctx.from.username ? ctx.from.username : ctx.from.first_name }!\n\n` +
           `I am your Crypto Assistant Bot. Choose a feature below to get started:`,
         Markup.inlineKeyboard([
           [Markup.button.callback("💱 Coin Price", "go_convert")],
