@@ -33,9 +33,9 @@ step1.on("text", async (ctx) => {
   const currentPrice = price.toFixed(2);
   ctx.scene.session.coinSymbol = symbol;
 
-  let message = `✅ Tracking **${symbol}**.\n\n`;
-  message += `**Current Price:** **$${currentPrice}**\n\n`;
-  message += `Now, choose the alert type:`;
+  let message = `✅ Tracking **${symbol}**.\n\n **Current Price:** **$${currentPrice}**\n\n Now, choose the alert type:`;
+  // message += `**Current Price:** **$${currentPrice}**\n\n`;
+  // message += `Now, choose the alert type:`;
 
   ctx.scene.session.coinSymbol = symbol;
 
