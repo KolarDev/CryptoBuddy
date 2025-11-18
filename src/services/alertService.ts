@@ -1,4 +1,5 @@
 import { PriceAlert } from "../models/priceAlert";
+import { Subscription } from "../models/subscribe";
 
 /**
  * Saves a new price alert to the database.
@@ -22,8 +23,21 @@ export async function savePriceAlert(
       alertType,
       status: "ACTIVE",
     });
+    const subscribed = await Subscription.findOne({ chatId });
+    if (subscribed) {
+      if (!subscribed.types.includes("price_alerts")) {
+        subscribed.types.push("price_alerts");
+        await subscribed.save();
+      }
+    } else {
+      await Subscription.create({
+        chatId,
+        types: ["price_alerts"],
+      });
+    }
     console.log(`💰 New alert created for ${coinSymbol} by chat ${chatId}`);
     return newAlert;
+
   } catch (error) {
     console.error("❌ Failed to save price alert:", error);
     // You might want to throw the error or return a specific error object
